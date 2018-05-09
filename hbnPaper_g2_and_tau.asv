@@ -190,15 +190,11 @@ for whichPeak = 1:length(peaks(1,:))
 %             decayCurve_1000(whichPeak,:) = ...
 %                 coinc_1000(grabTheseCoincs)/max(coinc_1000(grabTheseCoincs));
             decayCurve_1000(whichPeak,:) = ...
-                coinc_1000(grabTheseCoincs);
+                coinc_1000(grabTheseCoincs)/max(coinc_1000(grabTheseCoincs));
             
         else
-%             decayCurve_870(whichPeak,:) = ...
-%                 coinc_870(grabTheseCoincs)/max(coinc_870(grabTheseCoincs));
             decayCurve_870(whichPeak,:) = ...
-                 coinc_870(grabTheseCoincs);
-
-
+                coinc_870(grabTheseCoincs)/max(coinc_870(grabTheseCoincs));
         end
     end
 end
