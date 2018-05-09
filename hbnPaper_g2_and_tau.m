@@ -202,7 +202,9 @@ stats(1,:) = mean(decayCurve_870);
 stats(4,:) = std(decayCurve_1000);
 stats(2,:) = std(decayCurve_870);
 
-
+csvwrite('decay1000.csv',decayCurve_1000)
+csvwrite('decay870.csv',decayCurve_870)
+csvwrite('decayStats.csv',stats)
 
 fig1 = figure(1);
 tau860Coords = [36:38, 43:45, 50:52, 57:59];
@@ -257,7 +259,7 @@ set([tau860 tau1000], 'Box', 'on', 'TickDir', 'out', 'TickLength', [.02 .02], ..
 set([hXLabel2, hYLabel2,hXLabel3, hYLabel3], 'FontSize', 10)
 set([hlegend2, hlegend3], 'Location','southwest', 'Box', 'on')
 
-export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau.png -transparent -m21
+%export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau.png -transparent -m21
 % set(gca, 'FontName', 'Helvetica')
 % set([hXLabel2, hYLabel], 'FontName', 'Helvetica')
 % % set([hLegend, gca], 'FontSize', 8)
