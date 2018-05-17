@@ -175,15 +175,17 @@ coinc_870 = histcounts(signal_870,edges);
 
 coincWinsPerLaserT = 12.5/coinc_window;
 highestTau = (floor(coincWinsPerLaserT/2))*coinc_window;
-decayTau = 0:coinc_window:highestTau;
+decayTau = -highestTau:coinc_window:highestTau;
 
-peaks(1,:) = [-75.5, -62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
-peaks(2,:) = [-74.5, -62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
+% peaks(1,:) = [-75.5, -62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
+peaks(1,:) = [-62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
+% peaks(2,:) = [-74.5, -62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
+peaks(2,:) = [-62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
 
 for whichPeak = 1:length(peaks(1,:))
     for whichEmitter =1:2
         currentPeak = peaks(whichEmitter,whichPeak);
-        grabTheseCoincs = bin_centres>=currentPeak & ...
+        grabTheseCoincs = bin_centres>=(currentPeak - highestTau) & ...
             bin_centres <= (currentPeak+highestTau);
         whichPeak
         if whichEmitter==1
@@ -209,8 +211,8 @@ stats(1,:) = mean(decayCurve_870);
 stats(4,:) = std(decayCurve_1000);
 stats(2,:) = std(decayCurve_870);
 
-csvwrite('decay1000.csv',decayCurve_1000)
-csvwrite('decay870.csv',decayCurve_870)
+csvwrite('decay1000_fullPeak.csv',decayCurve_1000)
+csvwrite('decay870_fullPeak.csv',decayCurve_870)
 csvwrite('decayStats.csv',stats)
 
 fig1 = figure(1);
