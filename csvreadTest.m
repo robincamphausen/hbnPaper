@@ -1,0 +1,1 @@
+decay = csvread('g2_860_2photon.csv');

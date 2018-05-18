@@ -139,9 +139,15 @@ firstpeak = x ==12.5;
 decay = decay/decay(firstpeak);
 % decay2 = (decay2+0.2)/decay2(firstpeak) +0.5;
 decay2 = (decay2)/decay2(firstpeak) +1;
-p1 = plot(x,decay,'r','LineWidth',1);
-p2 = plot(x, decay2,'b','LineWidth',1);
-hLegend = legend([p1 p2],{'1\mum', '860nm'},'Location','southeast');
+
+decay = csvread('g2_1000_2photon.csv');
+decay2 = csvread('g2_860_2photon.csv');
+decayTauList = csvread('taulistJupyter.csv');
+decay2 = decay2+1;
+
+p1 = plot(decayTauList,decay,'r','LineWidth',1);
+p2 = plot(decayTauList, decay2,'b','LineWidth',1);
+hLegend = legend([p2 p1],{'1.44eV (860nm)','1.24eV (1\mum)'},'Location','southeast');
 xlim([-coinc_range coinc_range])
 
 % -------------------------------------------------------------------------
@@ -151,8 +157,8 @@ xlim([-coinc_range coinc_range])
 %experimental coincidence peak slopes
 % clear all
 % close all
-lifetime1 = 5;
-lifetime2 = 4.5;
+lifetime1 = 5.6;
+lifetime2 = 4.6;
 
 [ signal_1000, signal_870 ] = importCoincidences(  ); %import delays
 
@@ -211,35 +217,54 @@ stats(1,:) = mean(decayCurve_870);
 stats(4,:) = std(decayCurve_1000);
 stats(2,:) = std(decayCurve_870);
 
-csvwrite('decay1000_fullPeak.csv',decayCurve_1000)
-csvwrite('decay870_fullPeak.csv',decayCurve_870)
-csvwrite('decayStats.csv',stats)
+% csvwrite('decay1000_fullPeak.csv',decayCurve_1000)
+% csvwrite('decay870_fullPeak.csv',decayCurve_870)
+% csvwrite('decayStats.csv',stats)
+
+% normalise decay curves:
+decayCurve_870 = decayCurve_870/max(stats(1,:));
+decayCurve_1000 = decayCurve_1000/max(stats(3,:));
+
+% import fitting peaks (from jupyter)
+singlepeak860 = csvread('singlepeak860.csv');
+singlepeak1000 = csvread('singlepeak1000.csv');
 
 fig1 = figure(1);
+% plot 860nm decay peak with fitting
+% ----------------------------------
 tau860Coords = [36:38, 43:45, 50:52, 57:59];
 tau860 = subplot(9,7,tau860Coords);
 hold on
-errorbar(decayTau,stats(1,:),stats(2,:),'o', 'MarkerFaceColor', 'b', 'MarkerSize',4)
+for decay860counter = 1:length(decayCurve_870(:,1))
+    plot(decayTau,decayCurve_870(decay860counter,:),'.k')
+end
+% errorbar(decayTau,stats(1,:),stats(2,:),'o', 'MarkerFaceColor', 'b', 'MarkerSize',4)
 % plot(decayTau, exp(-(decayTau)/lifetime1), 'b')
-taufit860 = plot(decayTau, exp(-(decayTau)/lifetime2),'b');
-xlim([0 2.5])
-ylim([0.45 1.05])
+taufit860 = plot(decayTauList, singlepeak860,'b','LineWidth',1);
+xlim([-3 3])
+ylim([0.4 1.2])
 hXLabel2 = xlabel('Delay (ns)');
 hYLabel2 = ylabel('PL (a.u.)');
 set(tau860, 'YScale', 'log')
-hlegend2 = legend(taufit860, '\tau_{1.44eV} = 4.5ns');
+hlegend2 = legend(taufit860, '\tau_{1.44eV} = 4.6ns');
 
+
+% plot 1000nm decay peak with fitting
+% -----------------------------------
 tau1000Coords = [40:42, 47:49, 54:56, 61:63];
 tau1000 = subplot(9,7,tau1000Coords);
 hold on
-errorbar(decayTau,stats(3,:),stats(4,:),'ro', 'MarkerFaceColor', 'r', 'MarkerSize',4)
-taufit1000 = plot(decayTau, exp(-(decayTau)/lifetime1),'r');
-xlim([0 2.5])
-ylim([0.45 1.05])
+for decay1000counter = 1:length(decayCurve_1000(:,1))
+    plot(decayTau,decayCurve_1000(decay1000counter,:),'.k')
+end
+% errorbar(decayTau,stats(3,:),stats(4,:),'ro', 'MarkerFaceColor', 'r', 'MarkerSize',4)
+taufit1000 = plot(decayTauList, singlepeak1000,'r','LineWidth',1);
+xlim([-3 3])
+ylim([0.4 1.2])
 hXLabel3 = xlabel('Delay (ns)');
 hYLabel3 = ylabel('PL (a.u.)');
 set(tau1000, 'YScale', 'log');
-hlegend3 = legend(taufit1000,'\tau_{1.24eV} = 5ns');
+hlegend3 = legend(taufit1000,'\tau_{1.24eV} = 5.6ns');
 
 
 
@@ -256,19 +281,19 @@ set(g2plot, 'Box', 'on', 'TickDir', 'out', 'TickLength', [.01 .01], ...
     'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3])
 
 set([hXLabel, hYLabel], 'FontName', 'Helvetica')
-set(hLegend, 'FontSize', 8)
+set(hLegend, 'FontSize', 7)
 set([hXLabel, hYLabel], 'FontSize', 10)
 
 % Adjust axes properties
 set([tau860 tau1000], 'Box', 'on', 'TickDir', 'out', 'TickLength', [.02 .02], ...
     'XMinorTick', 'off', 'YMinorTick', 'off', 'YGrid', 'on','YMinorGrid', 'on', ...
-    'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', 0:0.5: 1,'XTick', 0:0.5: 2.5, ...
-    'FontName', 'Helvetica', 'FontSize', 8 ...
+    'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', 0:0.5: 1,'XTick', -3:1: 3, ...
+    'FontName', 'Helvetica', 'FontSize', 7 ...
     )
 set([hXLabel2, hYLabel2,hXLabel3, hYLabel3], 'FontSize', 10)
 set([hlegend2, hlegend3], 'Location','southwest', 'Box', 'on')
 
-%export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau.png -transparent -m21
+% export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau.png -transparent -m21
 % set(gca, 'FontName', 'Helvetica')
 % set([hXLabel2, hYLabel], 'FontName', 'Helvetica')
 % % set([hLegend, gca], 'FontSize', 8)

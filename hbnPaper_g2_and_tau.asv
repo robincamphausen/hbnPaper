@@ -141,7 +141,7 @@ decay = decay/decay(firstpeak);
 decay2 = (decay2)/decay2(firstpeak) +1;
 p1 = plot(x,decay,'r','LineWidth',1);
 p2 = plot(x, decay2,'b','LineWidth',1);
-hLegend = legend([p1 p2],{'1\mum', '860nm'},'Location','southeast');
+hLegend = legend([p2 p1],{'1.44eV (860nm)','1.24eV (1\mum)'},'Location','southeast');
 xlim([-coinc_range coinc_range])
 
 % -------------------------------------------------------------------------
@@ -151,8 +151,8 @@ xlim([-coinc_range coinc_range])
 %experimental coincidence peak slopes
 % clear all
 % close all
-lifetime1 = 5;
-lifetime2 = 4.5;
+lifetime1 = 5.6;
+lifetime2 = 4.6;
 
 [ signal_1000, signal_870 ] = importCoincidences(  ); %import delays
 
@@ -175,26 +175,32 @@ coinc_870 = histcounts(signal_870,edges);
 
 coincWinsPerLaserT = 12.5/coinc_window;
 highestTau = (floor(coincWinsPerLaserT/2))*coinc_window;
-decayTau = 0:coinc_window:highestTau;
+decayTau = -highestTau:coinc_window:highestTau;
 
-peaks(1,:) = [-75.5, -62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
-peaks(2,:) = [-74.5, -62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
+% peaks(1,:) = [-75.5, -62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
+peaks(1,:) = [-62.5, -50, -37.5, -25, -13, 12.5, 25, 37, 49.5, 62];%, 75];
+% peaks(2,:) = [-74.5, -62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
+peaks(2,:) = [-62.5, -50, -37, -24.5, -12.5, 13, 25.5, 37.5, 50, 62.5];%, 75];
 
 for whichPeak = 1:length(peaks(1,:))
     for whichEmitter =1:2
         currentPeak = peaks(whichEmitter,whichPeak);
-        grabTheseCoincs = bin_centres>=currentPeak & ...
+        grabTheseCoincs = bin_centres>=(currentPeak - highestTau) & ...
             bin_centres <= (currentPeak+highestTau);
         whichPeak
         if whichEmitter==1
 %             decayCurve_1000(whichPeak,:) = ...
 %                 coinc_1000(grabTheseCoincs)/max(coinc_1000(grabTheseCoincs));
             decayCurve_1000(whichPeak,:) = ...
-                coinc_1000(grabTheseCoincs)/max(coinc_1000(grabTheseCoincs));
+                coinc_1000(grabTheseCoincs);
             
         else
+%             decayCurve_870(whichPeak,:) = ...
+%                 coinc_870(grabTheseCoincs)/max(coinc_870(grabTheseCoincs));
             decayCurve_870(whichPeak,:) = ...
-                coinc_870(grabTheseCoincs)/max(coinc_870(grabTheseCoincs));
+                 coinc_870(grabTheseCoincs);
+
+
         end
     end
 end
@@ -205,31 +211,44 @@ stats(1,:) = mean(decayCurve_870);
 stats(4,:) = std(decayCurve_1000);
 stats(2,:) = std(decayCurve_870);
 
-csvwrite('decay1000.csv',decayCurve_1000)
-csvwrite('decay870.csv',decayCurve_870)
-csvwrite('decayStats.csv',stats)
+% csvwrite('decay1000_fullPeak.csv',decayCurve_1000)
+% csvwrite('decay870_fullPeak.csv',decayCurve_870)
+% csvwrite('decayStats.csv',stats)
+
+
 
 fig1 = figure(1);
 tau860Coords = [36:38, 43:45, 50:52, 57:59];
 tau860 = subplot(9,7,tau860Coords);
 hold on
-errorbar(decayTau,stats(1,:),stats(2,:),'o', 'MarkerFaceColor', 'b', 'MarkerSize',4)
+
+for decay860counter = 1:length(decayCurve_870(1,:))
+    plot(decayTau,decayCurve_870(decay860counter,:),'.k')
+end
+
+% errorbar(decayTau,stats(1,:),stats(2,:),'o', 'MarkerFaceColor', 'b', 'MarkerSize',4)
 % plot(decayTau, exp(-(decayTau)/lifetime1), 'b')
-taufit860 = plot(decayTau, exp(-(decayTau)/lifetime2),'b');
-xlim([0 2.5])
-ylim([0.45 1.05])
+% taufit860 = plot(decayTau, exp(-(decayTau)/lifetime2),'b');
+xlim([-3 3])
+ylim([0.4 1.2])
 hXLabel2 = xlabel('Delay (ns)');
 hYLabel2 = ylabel('PL (a.u.)');
 set(tau860, 'YScale', 'log')
 hlegend2 = legend(taufit860, '\tau_{1.44eV} = 4.5ns');
 
+
+
+
 tau1000Coords = [40:42, 47:49, 54:56, 61:63];
 tau1000 = subplot(9,7,tau1000Coords);
 hold on
-errorbar(decayTau,stats(3,:),stats(4,:),'ro', 'MarkerFaceColor', 'r', 'MarkerSize',4)
-taufit1000 = plot(decayTau, exp(-(decayTau)/lifetime1),'r');
-xlim([0 2.5])
-ylim([0.45 1.05])
+
+
+
+% errorbar(decayTau,stats(3,:),stats(4,:),'ro', 'MarkerFaceColor', 'r', 'MarkerSize',4)
+% taufit1000 = plot(decayTau, exp(-(decayTau)/lifetime1),'r');
+xlim([-3 3])
+ylim([0.4 1.2])
 hXLabel3 = xlabel('Delay (ns)');
 hYLabel3 = ylabel('PL (a.u.)');
 set(tau1000, 'YScale', 'log');
@@ -250,14 +269,14 @@ set(g2plot, 'Box', 'on', 'TickDir', 'out', 'TickLength', [.01 .01], ...
     'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3])
 
 set([hXLabel, hYLabel], 'FontName', 'Helvetica')
-set(hLegend, 'FontSize', 8)
+set(hLegend, 'FontSize', 7)
 set([hXLabel, hYLabel], 'FontSize', 10)
 
 % Adjust axes properties
 set([tau860 tau1000], 'Box', 'on', 'TickDir', 'out', 'TickLength', [.02 .02], ...
     'XMinorTick', 'off', 'YMinorTick', 'off', 'YGrid', 'on','YMinorGrid', 'on', ...
-    'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', 0:0.5: 1,'XTick', 0:0.5: 2.5, ...
-    'FontName', 'Helvetica', 'FontSize', 8 ...
+    'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', 0:0.5: 1,'XTick', -3:1: 3, ...
+    'FontName', 'Helvetica', 'FontSize', 7 ...
     )
 set([hXLabel2, hYLabel2,hXLabel3, hYLabel3], 'FontSize', 10)
 set([hlegend2, hlegend3], 'Location','southwest', 'Box', 'on')
