@@ -294,6 +294,8 @@ set([hXLabel2, hYLabel2,hXLabel3, hYLabel3], 'FontSize', 10)
 set([hlegend2, hlegend3], 'Location','southwest', 'Box', 'on')
 
 % export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau.png -transparent -m21
+
+
 % set(gca, 'FontName', 'Helvetica')
 % set([hXLabel2, hYLabel], 'FontName', 'Helvetica')
 % % set([hLegend, gca], 'FontSize', 8)
