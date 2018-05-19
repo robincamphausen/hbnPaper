@@ -23,8 +23,24 @@ yyaxis left
 HRxlabel = xlabel('Phonon Energy (meV)');
 HRylabel_L = ylabel('S (1/eV)');
 
-yyaxis right
 HRylabel_R = ylabel('S_k');
+
+
+% % this is how to plot two y axis:
+%     [hAx,hLine1,hLine2] = plotyy(x,y1,x,y2);
+% 
+%     title('Multiple Decay Rates')
+%     xlabel('Time (\musec)')
+% 
+%     ylabel(hAx(1),'Slow Decay') % left y-axis 
+%     ylabel(hAx(2),'Fast Decay') % right y-axis
+
+
+
+
+
+
+
 % --------------------------------------------------------
 % set plot properties:
 PLplot.FontName = 'Helvetica';
