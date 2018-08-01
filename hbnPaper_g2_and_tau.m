@@ -50,6 +50,8 @@ plot(bin_centres,signalCoinc, 'k.')%,bin_centres, g05line, '--k',bin_centres, g1
 % title('Second-order Coherence');
 % xlabel('\tau (ns)');
 
+csvwrite('g21000nm_exp.csv',bin_centres,signalCoinc)
+
 %-------------------------------------------------------------------------
 
 % signal2: import delays files for 860nm emitter
