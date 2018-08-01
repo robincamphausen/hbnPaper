@@ -49,8 +49,9 @@ plot(bin_centres,signalCoinc, 'k.')%,bin_centres, g05line, '--k',bin_centres, g1
 % plot(bin_centres, g25line, '--','Color', 0.6-[0.1 0.1 0.1])
 % title('Second-order Coherence');
 % xlabel('\tau (ns)');
-
-csvwrite('g21000nm_exp.csv',bin_centres,signalCoinc)
+g2_1000nm_exp(1,:) = bin_centres;
+g2_1000nm_exp(2,:) = signalCoinc;
+csvwrite('g2_1000nm_exp.csv',g2_1000nm_exp)
 
 %-------------------------------------------------------------------------
 
