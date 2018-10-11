@@ -1,5 +1,5 @@
 # README
-# hBN paper figures repo
+## hBN paper figures repo
 last edit 11/10/2018 - Robin
 
 This repo contains the code/files to make the figures 2-4 for the NIR hBN paper. The figures are generated in the following scripts (details below):
@@ -12,9 +12,9 @@ I use the export_fig package to export the figures in high quality so just make 
 Inkscape is then used to add the fig labels (a,b,...) and ensure the fig has the correct size (width should be 84mm). Inkscape files are included in subfolder, as of the commit from the 11th October 2018.
 
 -------------------------------------------------------------
-# details
+## details
 
-## hbnPaper_confocal_and_spectra.m (fig2)
+### hbnPaper_confocal_and_spectra.m (fig2)
  - all the data is in the repo somewhere, just running the script should find it.
  - change file location on line 101 to save image where you want it.
 
@@ -24,7 +24,7 @@ TO DO:
  - make smooth fit continuous line to the spectrum plot.
 
 
-## hbnPaper_g2_and_tau.m (fig3)
+### hbnPaper_g2_and_tau.m (fig3)
  - (apologies for this one... it's so fucking stupid honestly)
  - lines 1-86 imports the experimental g2 data, normalises it, and plots it.
  - just ignore lines 87-144 - this is the Matlab implementation of my inverse exponentials g2 fit which you don't like.
@@ -39,14 +39,14 @@ TO DO:
  - once better fit has been obtained replot emitter lifetime graph with new lifetime tau value.
 
 
-## plottingSherifsData.m (fig4)
+### plottingSherifsData.m (fig4)
  - this pretty much just plots the data that Sherif sent me, and then using Inkscape everything is put together with the hexagonal lattice cartoon.
  
 To DO
 - fig 4a in red (to match experimental spectrum graph), get rid of fig 4b - explain that we will measure HR factor in future experiment;
 
 ---------------------------------------------------------------
-# General to-do list re Writing
+## General to-do list re Writing
 
  - emphasise that only two emitters in NIR were sub-Poissonian;
  - remove reference to background emission as we didn't measure it - say instead that coinc counts are raw data (and re-check fitting);
