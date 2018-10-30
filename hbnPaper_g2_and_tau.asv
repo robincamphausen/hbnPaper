@@ -24,6 +24,7 @@ signalCoinc = signalCoinc/norm;
 
 %plot g(2) for 1000nm emitter
 figure(1)
+fig1 = figure(1);
 g2plot = subplot(11,7,1:35);
 hold on
 plot(bin_centres,signalCoinc, 'k.');
@@ -38,9 +39,25 @@ g2_1000nm_exp(2,:) = signalCoinc;
 csvwrite('g2_1000nm_exp.csv',g2_1000nm_exp)
 %------------------------------------------------------------------------------------------------------
 
+fig1title = title('g^{(2)} fitting with autocorr method, \tau = 5.5ns');
+% fig1title = title('g^{(2)} fitting with autocorr method, \tau = 10.0ns');
+% fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 5.5s');
+% fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 10.0ns');
+
 %import simulated g2 values (check filenames):
-decay = csvread('g2_1000_2photon.csv');
-decayTauList = csvread('taulistJupyter.csv');
+
+%for autocorr method:
+% decay = csvread('g2_1000_1photon_5.5ns.csv');
+% decay = csvread('g2_1000_1photon_10.0ns.csv');
+% decayTauList = csvread('taulistJupyter.csv');
+%for photon sampling method:
+decay = load('singlePhoton_tauDecay1_5.5ns.mat','y_hist');
+% decay = load('singlePhoton_tauDecay1_10ns.mat','y_hist');
+decayTauListLoad = load('singlePhoton_tauDecay1_5.5ns.mat', 'bins');
+decayTauListLoad = bins.decayTauListLoad;
+decayTauListLoad = decayTauListLoad(2)-decayTauListLoad(1)+decayTauListLoad;
+decayTauList = decayTauListLoad(1:end-1);
+
 
 p1 = plot(decayTauList,decay,'r','LineWidth',1);
 
@@ -97,11 +114,13 @@ stats(2,:) = std(decayCurve_870);
 % normalise decay curves:
 decayCurve_870 = decayCurve_870/max(stats(1,:));
 decayCurve_1000 = decayCurve_1000/max(stats(3,:));
+%------------------------------------------------------------------------------------------------------
 
-% import fitting peaks (from jupyter)
-singlepeak1000 = csvread('singlepeak1000.csv');
+% import fitting peaks from autocorr:
+singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_5.5ns.csv');
+%singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_10.0ns.csv');
 
-fig1 = figure(1);
+
 % plot 1000nm decay peak with fitting
 % -----------------------------------
 tau1000Coords = [40:42, 47:49, 54:56, 61:63];

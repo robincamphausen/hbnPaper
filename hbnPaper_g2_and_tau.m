@@ -39,25 +39,29 @@ g2_1000nm_exp(2,:) = signalCoinc;
 csvwrite('g2_1000nm_exp.csv',g2_1000nm_exp)
 %------------------------------------------------------------------------------------------------------
 
-fig1title = title('g^{(2)} fitting with autocorr method, \tau = 5.5ns');
+% fig1title = title('g^{(2)} fitting with autocorr method, \tau = 5.5ns');
 % fig1title = title('g^{(2)} fitting with autocorr method, \tau = 10.0ns');
-% fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 5.5s');
-% fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 10.0ns');
+%fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 5.5s');
+fig1title = title('g^{(2)} fitting with photon sampling method, \tau = 10.0ns');
 
 %import simulated g2 values (check filenames):
 
 %for autocorr method:
-decay = csvread('g2_1000_1photon_5.5ns.csv');
-decay = csvread('g2_1000_1photon_10.0ns.csv');
-decayTauList = csvread('taulistJupyter.csv');
+% decay = csvread('g2_1000_1photon_5.5ns.csv');
+% decay = csvread('g2_1000_1photon_10.0ns.csv');
+decayTauList_jup = csvread('taulistJupyter.csv');
 %for photon sampling method:
-decay = load('singlePhoton_tauDecay1_5.5ns.mat','y_hist');
-decay = load('singlePhoton_tauDecay1_10.0ns.mat','y_hist');
-decayTauListLoad = load('singlePhoton_tauDecay1_5.5ns.mat','bins');
+%decayStruct = load('singlePhoton_tauDecay1_5.5ns.mat','y_hist');
+decayStruct = load('singlePhoton_tauDecay1_10ns.mat','y_hist');
+decayLoad = decayStruct.y_hist;
+decay = decayLoad/(max(decayLoad));
+decayTauListStruct = load('singlePhoton_tauDecay1_5.5ns.mat', 'bins');
+decayTauListLoad = decayTauListStruct.bins;
 decayTauListLoad = decayTauListLoad(2)-decayTauListLoad(1)+decayTauListLoad;
 decayTauList = decayTauListLoad(1:end-1);
+% decayTauList = decayTauList_jup;
 
-
+subplot(11,7,1:35);
 p1 = plot(decayTauList,decay,'r','LineWidth',1);
 
 xlim([-coinc_range coinc_range])
@@ -116,13 +120,13 @@ decayCurve_1000 = decayCurve_1000/max(stats(3,:));
 %------------------------------------------------------------------------------------------------------
 
 % import fitting peaks from autocorr:
-singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_5.5ns.csv');
-%singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_10.0ns.csv');
+%singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_5.5ns.csv');
+singlepeak1000 = csvread('singlepulseAutocorr_1000_1photon_10.0ns.csv');
 
 
 % plot 1000nm decay peak with fitting
 % -----------------------------------
-tau1000Coords = [40:42, 47:49, 54:56, 61:63];
+%tau1000Coords = [40:42, 47:49, 54:56, 61:63];
 tau1000Coords = [50:77];
 tau1000 = subplot(11,7,tau1000Coords);
 hold on
@@ -130,13 +134,14 @@ for decay1000counter = 1:length(decayCurve_1000(:,1))
     plot(decayTau,decayCurve_1000(decay1000counter,:),'.k')
 end
 % errorbar(decayTau,stats(3,:),stats(4,:),'ro', 'MarkerFaceColor', 'r', 'MarkerSize',4)
-taufit1000 = plot(decayTauList, singlepeak1000,'r','LineWidth',1);
+taufit1000 = plot(decayTauList_jup, singlepeak1000,'r','LineWidth',1);
 xlim([-3 3])
 ylim([0.4 1.1])
 hXLabel2 = xlabel('Delay (ns)');
 hYLabel2 = ylabel('PL (a.u.)');
 %set(tau1000, 'YScale', 'log');
-hlegend2 = legend(taufit1000,'\tau_{1.24eV} = 5.6ns');
+%hlegend2 = legend(taufit1000,'\tau_{1.24eV} = 5.5ns');
+hlegend2 = legend(taufit1000,'\tau_{1.24eV} = 10.0ns');
 
 
 
@@ -168,4 +173,7 @@ set(hlegend2, 'Location','southwest', 'Box', 'on')
 %set([hlegend2, hlegend3], 'Location','southwest', 'Box', 'on')
 
 
-% export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau_only1000.png -transparent -m21
+% export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau_only1000_autocorr5.5.png -transparent -m8
+% export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau_only1000_autocorr10.png -transparent -m8
+%export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau_only1000_photonSampling5.5.png -transparent -m8
+export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\g2_tau_only1000_photonSampling10.png -transparent -m8
