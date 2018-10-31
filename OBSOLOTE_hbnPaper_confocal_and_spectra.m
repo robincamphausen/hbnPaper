@@ -7,7 +7,7 @@ clear all
 subfigrows = 10;
 subfigcols = 30;
 confocalCoords = zeros(1,subfigrows^2);
-spectraWidth = subfigcols-subfigrows-10;
+spectraWidth = subfigcols-subfigrows-5;
 spectraCoords = zeros(1,subfigrows*spectraWidth);
 for subfigcounter = 1:subfigrows
     confocalCoords((subfigcounter-1)*subfigrows+1 : subfigcounter*subfigrows) = ...
@@ -20,24 +20,26 @@ end
 % =========================================================================
 % import spectral data
 spectrum1000 = csvread('Pump 680 (SHG) Power 1.8mW table 60sec Int Time.csv');
+spectrum860 = csvread('2x_850LP_plus_950LP_On_Emitter_10sec.csv');
+ST810 = spectrum860(:,1)<810 | spectrum860(:,1)>960;
+spectrum860(ST810,:) =[];
 
 % normalise spectrum
+PL860 = spectrum860(:,2);
+PL860 = (PL860-min(PL860))/(max(PL860)-min(PL860));
+WL860 = spectrum860(:,1);
 PL1000 = spectrum1000(:,2);
 PL1000 = (PL1000-min(PL1000))/(max(PL1000)-min(PL1000));
 WL1000 = spectrum1000(:,1);
-
-% fitting to the spectrum:
-% PLfit = fit(WL1000,PL1000,'smoothingspline');
-% fuck off matlab - you have to do the fit in python
-
 % plot spectrum
 figure(4)
 spectraplot = subplot(subfigrows,subfigcols,spectraCoords);
 hold off
 hold on
 plot(WL1000,PL1000,'r.','markers',4)
+plot(WL860,PL860,'.b','markers',4)
 pbaspect([spectraWidth subfigrows 1])
-xlim([930 1050])
+xlim([810 1050])
 hXLabel = xlabel('Wavelength (nm)');
 hYLabel = ylabel('PL intensity (a.u.)');
 xt = get(spectraplot, 'XTick');
@@ -63,23 +65,11 @@ cb =colorbar;
 cb.Location = 'southoutside';
 cb.Label.String = 'PL intensity (a.u.)';
 cb.Ticks = [];
-cb.Position = ([0.24 0.3 0.2 0.015]);
+cb.Position = ([0.155 0.3 0.2 0.015]);
 cb.Label.FontSize = 10;
 cb.Label.FontName = 'Helvetica';
 caxis([0.0 0.2]);
 % grid off
-
-% Small plot zoomed in on single
-smallConfocal = confocal(16:26,40:50);
-fig5 = figure(5);
-surf(smallConfocal,'EdgeColor','none')
-view(0,90);
-daspect([1 1 1])
-% image(smallConfocal,'CDataMapping','scaled')
-smallConfocalplot = gca;
-colormap('jet')
-caxis([0.0 0.2]);
-
 
 %Make the graph look good:
 % =========================================================================
@@ -101,7 +91,7 @@ set(spectraplot, 'Box', 'on', 'TickDir', 'out', 'TickLength', [.01 .01], ...
     'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', 0:0.5:1, ...
     'XTick',810:60:1050)
 %     'LineWidth', 1)
-set([confocalplot,smallConfocalplot], 'Box', 'on', 'TickDir', 'out', 'TickLength', [0 0], ...
+set(confocalplot, 'Box', 'on', 'TickDir', 'out', 'TickLength', [0 0], ...
     'XMinorTick', 'off', 'YMinorTick', 'off', 'YGrid', 'off', ...
     'XColor', 0.3-[.3 .3 .3], 'YColor', 0.3-[.3 .3 .3], 'YTick', [], ...
     'XTick',[],...

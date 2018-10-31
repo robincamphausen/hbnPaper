@@ -27,8 +27,7 @@ PL1000 = (PL1000-min(PL1000))/(max(PL1000)-min(PL1000));
 WL1000 = spectrum1000(:,1);
 
 % fitting to the spectrum:
-% PLfit = fit(WL1000,PL1000,'smoothingspline');
-% fuck off matlab - you have to do the fit in python
+PLfit = fit(WL1000,PL1000,'smoothingspline');
 
 % plot spectrum
 figure(4)
