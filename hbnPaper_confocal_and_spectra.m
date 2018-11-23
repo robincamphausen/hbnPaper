@@ -108,4 +108,4 @@ set([confocalplot,smallConfocalplot], 'Box', 'on', 'TickDir', 'out', 'TickLength
     'LineWidth', 0.5)
 % set(gcf, 'PaperPositionMode', 'auto');
 
-%export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\confocalSpectra.png -transparent -m21
+export_fig C:\Users\Robin\Documents\Writing\Papers\nir-single-photons-hBN\plots_and_figures\confocalSpectra.png -transparent -m10
